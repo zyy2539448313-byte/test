@@ -1,0 +1,40 @@
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# 构建产物
+dist/
+build/
+
+# 日志与临时文件
+*.log
+*.tmp
+*.temp
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# 依赖与工作区缓存（体积大、可再生成）
+.workbuddy/**/cache/
+.workbuddy/binaries/
+
+# 大体积媒体与压缩包
+*.mp4
+*.avi
+*.mov
+*.iso
+*.7z
