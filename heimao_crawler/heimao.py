@@ -56,6 +56,14 @@ UA_POOL = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
 ]
 
+# 两级关键词匹配：
+#   强词：出现即命中（补漏/疏通/加氟/上门维修/竞品商家名……）
+#   弱词：单独出现太容易误报（"防水夹克""地漏假货""热水器质量"），
+#         必须与上下文词（维修/师傅/上门/收费等）同现才算命中。
+CONTEXT_WORDS = ["维修", "师傅", "上门", "收费", "报价", "修理", "坏了修", "修不好"]
+WEAK_KEYWORDS = {"防水", "漏水", "渗水", "马桶", "地漏", "空调", "热水器",
+                 "冰箱", "洗衣机", "油烟机", "燃气灶", "家电", "管道"}
+
 DEFAULT_KEYWORDS = [
     "防水", "补漏", "漏水", "疏通", "下水道", "马桶", "地漏",
     "空调维修", "空调加氟", "家电维修", "上门维修", "维修费", "维修师傅",
@@ -175,7 +183,14 @@ def match_keywords(record, keywords):
     if not keywords:
         return True
     text = record["title"] + " " + record["summary"] + " " + record["merchant"]
-    return any(kw in text for kw in keywords)
+    has_context = any(w in text for w in CONTEXT_WORDS)
+    for kw in keywords:
+        if kw not in text:
+            continue
+        if kw in WEAK_KEYWORDS and not has_context:
+            continue  # 弱词无上下文，视为误报
+        return True
+    return False
 
 
 def load_seen(path):
